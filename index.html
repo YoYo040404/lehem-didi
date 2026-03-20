@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#FDF6EC">
+  <title>לחם דידי | מחשבון אפייה</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Rubik:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── CSS Variables ── */
+    :root {
+      --color-cream: #FDF6EC;
+      --color-wheat: #F5E6CE;
+      --color-brown: #3D2B1F;
+      --color-brown-light: #7A6555;
+      --color-amber: #D4913D;
+      --color-amber-light: #E8B86D;
+      --color-terracotta: #C05621;
+      --color-terracotta-dark: #A84919;
+      --color-card: #FFFFFF;
+      --color-border: #E8DDD0;
+      --color-warning-bg: #FEF3C7;
+      --color-warning-text: #92400E;
+      --color-warning-border: #F59E0B;
+      --color-success: #059669;
+      --font-body: 'Heebo', sans-serif;
+      --font-display: 'Rubik', sans-serif;
+    }
+
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+    body {
+      background: var(--color-cream);
+      color: var(--color-brown);
+      font-family: var(--font-body);
+      font-weight: 400;
+      min-height: 100dvh;
+      overscroll-behavior: none;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Grain Overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px;
+    }
+
+    /* ── Stagger Animation ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .stagger > * { animation: fadeInUp 0.35s ease-out both; }
+    .stagger > *:nth-child(1) { animation-delay: 0ms; }
+    .stagger > *:nth-child(2) { animation-delay: 50ms; }
+    .stagger > *:nth-child(3) { animation-delay: 100ms; }
+    .stagger > *:nth-child(4) { animation-delay: 150ms; }
+    .stagger > *:nth-child(5) { animation-delay: 200ms; }
+    .stagger > *:nth-child(6) { animation-delay: 250ms; }
+    .stagger > *:nth-child(7) { animation-delay: 300ms; }
+    .stagger > *:nth-child(8) { animation-delay: 350ms; }
+    .stagger > *:nth-child(9) { animation-delay: 400ms; }
+    .stagger > *:nth-child(10) { animation-delay: 450ms; }
+    .stagger > *:nth-child(11) { animation-delay: 500ms; }
+    .stagger > *:nth-child(12) { animation-delay: 550ms; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
+
+    /* ── Focus ── */
+    :focus-visible { outline: 2px solid var(--color-amber); outline-offset: 2px; border-radius: 4px; }
+
+    /* ── Layout ── */
+    .app-main {
+      flex: 1;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 24px 20px 100px 20px;
+      position: relative;
+      z-index: 2;
+    }
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--color-card);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      border: 1px solid rgba(232,221,208,0.5);
+    }
+
+    /* ── Typography ── */
+    .font-display { font-family: var(--font-display); }
+    .text-brown { color: var(--color-brown); }
+    .text-brown-light { color: var(--color-brown-light); }
+    .text-amber { color: var(--color-amber); }
+    .text-terracotta { color: var(--color-terracotta); }
+    .text-success { color: var(--color-success); }
+    .font-bold { font-weight: 700; }
+    .font-semibold { font-weight: 600; }
+    .font-medium { font-weight: 500; }
+    .tabular-nums { font-variant-numeric: tabular-nums; }
+
+    /* ── Branded Header ── */
+    .brand-header {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .brand-header h1 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 2rem;
+      color: var(--color-brown);
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+    .brand-header p {
+      font-size: 0.875rem;
+      color: var(--color-brown-light);
+      margin-top: 4px;
+    }
+
+    /* ── Completion Banner ── */
+    .completion-banner {
+      background: linear-gradient(135deg, var(--color-terracotta), var(--color-amber));
+      color: white;
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 4px 16px rgba(192, 86, 33, 0.25);
+      margin-bottom: 4px;
+    }
+    .completion-banner .banner-icon {
+      font-size: 1.75rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .completion-banner .banner-text {
+      flex: 1;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .completion-banner .banner-time {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* ── Flex Helpers ── */
+    .flex-col { display: flex; flex-direction: column; }
+    .gap-5 { gap: 20px; }
+    .gap-3 { gap: 12px; }
+    .gap-2 { gap: 8px; }
+    .gap-1 { gap: 4px; }
+    .items-center { align-items: center; }
+    .items-baseline { align-items: baseline; }
+    .items-start { align-items: flex-start; }
+    .justify-between { justify-content: space-between; }
+    .justify-center { justify-content: center; }
+    .flex-1 { flex: 1; }
+    .flex-row { display: flex; flex-direction: row; }
+    .shrink-0 { flex-shrink: 0; }
+
+    /* ── Stepper ── */
+    .stepper-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .stepper-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .stepper-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(245,230,206,0.7);
+      color: var(--color-brown);
+      font-size: 1.25rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .stepper-btn:hover { background: var(--color-wheat); }
+    .stepper-btn:active { transform: scale(0.95); }
+    .stepper-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .stepper-btn:disabled:active { transform: none; }
+    .stepper-value {
+      width: 32px;
+      text-align: center;
+      font-size: 1.125rem;
+      font-weight: 600;
+      font-family: var(--font-display);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── Time Input ── */
+    .time-input-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .time-input {
+      background: rgba(245,230,206,0.5);
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 500;
+      font-family: var(--font-body);
+      color: var(--color-brown);
+      border: 1px solid rgba(232,221,208,0.5);
+      min-height: 44px;
+      text-align: center;
+      direction: ltr;
+    }
+
+    /* ── Toggle Buttons (radio group) ── */
+    .toggle-group {
+      display: grid;
+      gap: 8px;
+    }
+    .toggle-group.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .toggle-group.cols-4 { grid-template-columns: repeat(4, 1fr); }
+    .toggle-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      border-radius: 12px;
+      padding: 12px 8px;
+      min-height: 48px;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+      background: rgba(245,230,206,0.4);
+      color: var(--color-brown-light);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 600;
+      justify-content: center;
+    }
+    .toggle-btn:hover { background: rgba(245,230,206,0.7); }
+    .toggle-btn:active { transform: scale(0.95); }
+    .toggle-btn.selected {
+      background: rgba(212,145,61,0.15);
+      border-color: var(--color-amber);
+      color: var(--color-brown);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .toggle-btn .sub { font-size: 0.6875rem; opacity: 0.7; font-weight: 400; }
+
+    /* ── Switch Toggle ── */
+    .switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      min-height: 44px;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .switch-track {
+      position: relative;
+      width: 48px;
+      height: 28px;
+      border-radius: 14px;
+      background: var(--color-border);
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .switch-track.on { background: var(--color-amber); }
+    .switch-thumb {
+      position: absolute;
+      top: 2px;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      transition: transform 0.2s;
+      /* RTL: off=left(start), on=right(end) */
+      right: 2px;
+    }
+    .switch-track.on .switch-thumb { transform: translateX(-20px); }
+
+    /* ── Primary Button ── */
+    .btn-primary {
+      width: 100%;
+      background: var(--color-terracotta);
+      color: white;
+      font-weight: 700;
+      font-size: 1.125rem;
+      font-family: var(--font-display);
+      border-radius: 16px;
+      padding: 16px;
+      min-height: 56px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(192,86,33,0.2);
+      transition: all 0.2s;
+    }
+    .btn-primary:hover { background: var(--color-terracotta-dark); }
+    .btn-primary:active { transform: scale(0.98); }
+
+    /* ── Secondary Button ── */
+    .btn-secondary {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--color-card);
+      border: 1px solid rgba(232,221,208,0.5);
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 48px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      font-family: var(--font-body);
+      color: var(--color-brown);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-secondary:hover { background: rgba(245,230,206,0.3); }
+    .btn-secondary:active { transform: scale(0.98); }
+
+    /* ── Warning Banner ── */
+    .warning-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      border-radius: 12px;
+      background: var(--color-warning-bg);
+      border: 1px solid rgba(245,158,11,0.4);
+      padding: 12px 16px;
+      color: var(--color-warning-text);
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+    .warning-icon { margin-top: 2px; flex-shrink: 0; font-size: 1rem; }
+
+    /* ── Segmented Control ── */
+    .segmented {
+      display: flex;
+      background: rgba(245,230,206,0.6);
+      border-radius: 12px;
+      padding: 4px;
+    }
+    .segmented button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      font-family: var(--font-body);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: transparent;
+      color: var(--color-brown-light);
+    }
+    .segmented button:hover { color: var(--color-brown); }
+    .segmented button.active {
+      background: var(--color-card);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      color: var(--color-brown);
+    }
+
+    /* ── Ingredient Row ── */
+    .ingredient-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+    }
+    .ingredient-row + .ingredient-row {
+      border-top: 1px solid rgba(232,221,208,0.4);
+    }
+    .ingredient-value {
+      font-size: 1.125rem;
+      font-weight: 600;
+      font-family: var(--font-display);
+      font-variant-numeric: tabular-nums;
+    }
+    .ingredient-unit {
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: var(--color-brown-light);
+      margin-right: 4px;
+    }
+
+    /* ── Info Note ── */
+    .info-note {
+      background: rgba(245,230,206,0.4);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.875rem;
+      color: var(--color-brown-light);
+      line-height: 1.6;
+    }
+
+    /* ── Timeline ── */
+    .timeline { position: relative; }
+    .timeline-line {
+      position: absolute;
+      top: 8px;
+      bottom: 8px;
+      right: 18px;
+      width: 2px;
+      background: var(--color-border);
+    }
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+    }
+    .timeline-dot {
+      position: relative;
+      z-index: 3;
+      margin-top: 4px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-right: 13px;
+      background: var(--color-amber);
+      box-shadow: 0 0 0 4px var(--color-cream);
+    }
+    .timeline-dot.window { background: var(--color-amber-light); box-shadow: 0 0 0 4px rgba(212,145,61,0.08); }
+    .timeline-dot.bake { background: var(--color-terracotta); box-shadow: 0 0 0 4px rgba(192,86,33,0.08); }
+    .timeline-dot.final { background: var(--color-success); box-shadow: 0 0 0 4px rgba(5,150,105,0.08); }
+    .timeline-content {
+      flex: 1;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 4px;
+      background: var(--color-card);
+      border: 1px solid rgba(232,221,208,0.4);
+    }
+    .timeline-content.window {
+      background: rgba(212,145,61,0.05);
+      border-color: rgba(212,145,61,0.15);
+    }
+    .timeline-content.bake {
+      background: rgba(192,86,33,0.05);
+      border-color: rgba(192,86,33,0.1);
+    }
+    .timeline-content.final {
+      background: rgba(5,150,105,0.1);
+      border-color: rgba(5,150,105,0.2);
+    }
+    .timeline-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .timeline-title { font-size: 0.875rem; font-weight: 600; color: var(--color-brown); }
+    .timeline-time {
+      font-size: 0.75rem;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-brown-light);
+      flex-shrink: 0;
+    }
+    .timeline-note {
+      font-size: 0.75rem;
+      color: rgba(122,101,85,0.8);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+    .day-break {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 12px 0 12px 40px;
+    }
+    .day-break-line { flex: 1; height: 1px; background: rgba(212,145,61,0.3); }
+    .day-break-label {
+      font-size: 0.6875rem;
+      color: var(--color-amber);
+      font-weight: 500;
+      padding: 0 8px;
+    }
+
+    /* ── Live Bake ── */
+    .progress-track {
+      flex: 1;
+      height: 8px;
+      background: var(--color-wheat);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--color-amber);
+      border-radius: 4px;
+      transition: width 0.5s;
+    }
+    .step-card {
+      background: var(--color-card);
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      border: 1px solid rgba(232,221,208,0.4);
+      overflow: hidden;
+    }
+    .step-card-header {
+      background: rgba(212,145,61,0.1);
+      padding: 12px 20px;
+      border-bottom: 1px solid rgba(212,145,61,0.15);
+    }
+    .step-card-body { padding: 20px 20px 24px; }
+    .next-preview {
+      background: rgba(245,230,206,0.4);
+      border-radius: 12px;
+      padding: 12px 16px;
+      border: 1px solid rgba(232,221,208,0.3);
+    }
+    .nav-btn {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      background: var(--color-card);
+      border: 1px solid rgba(232,221,208,0.5);
+      color: var(--color-brown-light);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { background: rgba(245,230,206,0.3); }
+    .nav-btn:active { transform: scale(0.95); }
+    .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .nav-btn:disabled:active { transform: none; }
+    .advance-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 48px;
+      font-weight: 600;
+      font-size: 1rem;
+      font-family: var(--font-body);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--color-terracotta);
+      color: white;
+      box-shadow: 0 4px 12px rgba(192,86,33,0.2);
+    }
+    .advance-btn:hover { background: var(--color-terracotta-dark); }
+    .advance-btn:active { transform: scale(0.98); }
+    .advance-btn.done {
+      background: rgba(5,150,105,0.15);
+      color: var(--color-success);
+      border: 1px solid rgba(5,150,105,0.3);
+      box-shadow: none;
+    }
+    .step-list-toggle {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--color-brown-light);
+      cursor: pointer;
+      background: var(--color-card);
+      border: 1px solid rgba(232,221,208,0.4);
+      border-radius: 12px;
+      text-align: right;
+      font-family: var(--font-body);
+      transition: background 0.15s;
+    }
+    .step-list-toggle:hover { background: rgba(245,230,206,0.2); }
+    .step-list-items {
+      display: none;
+      max-height: 240px;
+      overflow-y: auto;
+      border-top: 1px solid rgba(232,221,208,0.3);
+    }
+    .step-list-items.open { display: block; }
+    .step-list-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      text-align: right;
+      background: none;
+      border: none;
+      border-bottom: 1px solid rgba(232,221,208,0.2);
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: background 0.15s;
+    }
+    .step-list-item:hover { background: rgba(245,230,206,0.2); }
+    .step-list-item.current { background: rgba(212,145,61,0.1); }
+    .step-list-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      font-size: 0.625rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-list-dot.past { background: rgba(5,150,105,0.15); color: var(--color-success); }
+    .step-list-dot.now { background: rgba(212,145,61,0.2); color: var(--color-amber); }
+    .step-list-dot.future { background: var(--color-wheat); color: var(--color-brown-light); }
+
+    /* ── Bottom Navigation ── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-top: 1px solid var(--color-border);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      max-width: 480px;
+      margin: 0 auto;
+      height: 64px;
+      padding: 0 4px;
+    }
+    .nav-tab {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      min-width: 56px;
+      min-height: 48px;
+      border-radius: 12px;
+      padding: 4px 8px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--color-brown-light);
+      font-family: var(--font-body);
+    }
+    .nav-tab:hover { color: var(--color-brown); }
+    .nav-tab:active { transform: scale(0.95); }
+    .nav-tab.active {
+      color: var(--color-terracotta);
+      transform: scale(1.05);
+    }
+    .nav-tab.disabled {
+      color: rgba(122,101,85,0.3);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .nav-tab svg { width: 24px; height: 24px; }
+    .nav-tab span {
+      font-size: 0.625rem;
+      line-height: 1.1;
+      font-weight: 500;
+    }
+    .nav-tab.active span { font-weight: 600; }
+    .nav-indicator {
+      position: absolute;
+      bottom: 4px;
+      width: 20px;
+      height: 2px;
+      border-radius: 1px;
+      background: var(--color-terracotta);
+    }
+
+    /* ── Section Label ── */
+    .section-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--color-brown);
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    /* ── Misc ── */
+    .screen-header h2 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-brown);
+    }
+    .screen-header p {
+      font-size: 0.875rem;
+      color: var(--color-brown-light);
+      margin-top: 4px;
+    }
+    .duration-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(245,230,206,0.5);
+      border-radius: 8px;
+      padding: 8px 12px;
+    }
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 80px 0;
+      text-align: center;
+    }
+
+    /* ── Number input hide spinners ── */
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type="number"] { -moz-appearance: textfield; }
+
+    /* ── Print ── */
+    .print-only { display: none; }
+    .no-print {}
+    @media print {
+      body::before { display: none; }
+      .bottom-nav, .no-print { display: none !important; }
+      .print-only { display: block !important; }
+      body { background: white; color: black; font-size: 13pt; padding: 0; margin: 0; }
+      .app-main { padding: 0 !important; max-width: 100% !important; }
+      .card { border-radius: 0 !important; box-shadow: none !important; border: 1px solid #ccc !important; }
+      * { animation: none !important; }
+    }
+
+    /* ── Saved indicator ── */
+    .saved-text { font-size: 0.75rem; color: rgba(122,101,85,0.4); text-align: center; }
+  </style>
+</head>
+<body>
+
+  <main class="app-main">
+
+    <!-- ═══ SETUP SCREEN ═══ -->
+    <div id="screen-setup" class="screen active">
+      <div class="flex-col gap-5 stagger">
+
+        <!-- Branded Header -->
+        <div class="brand-header">
+          <h1>לחם דידי</h1>
+          <p>בנה תהליך אפייה מותאם אישית</p>
+        </div>
+
+        <!-- Completion Banner -->
+        <div class="completion-banner" id="completion-banner">
+          <div class="banner-icon">🍞</div>
+          <div class="banner-text">
+            הכיכר האחרונה תהיה מוכנה ב-
+            <span class="banner-time" id="completion-time">--:--</span>
+          </div>
+        </div>
+
+        <!-- Loaves -->
+        <div class="card">
+          <div class="stepper-row">
+            <span class="section-label" style="margin-bottom:0">כמה כיכרות?</span>
+            <div class="stepper-controls">
+              <button class="stepper-btn" id="loaves-minus" aria-label="פחות">−</button>
+              <span class="stepper-value" id="loaves-value">1</span>
+              <button class="stepper-btn" id="loaves-plus" aria-label="יותר">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Start Time -->
+        <div class="card">
+          <div class="time-input-row">
+            <span class="section-label" style="margin-bottom:0">שעת התחלה</span>
+            <input type="time" id="start-time" class="time-input">
+          </div>
+        </div>
+
+        <!-- Dutch Ovens -->
+        <div class="card">
+          <div class="stepper-row">
+            <span class="section-label" style="margin-bottom:0">כמה סירים?</span>
+            <div class="stepper-controls">
+              <button class="stepper-btn" id="ovens-minus" aria-label="פחות">−</button>
+              <span class="stepper-value" id="ovens-value">1</span>
+              <button class="stepper-btn" id="ovens-plus" aria-label="יותר">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Room Temp -->
+        <div class="card">
+          <span class="section-label">טמפרטורת חדר</span>
+          <div class="toggle-group cols-3" id="temp-group">
+            <button class="toggle-btn" data-value="cool">
+              <span>קריר</span>
+              <span class="sub">מתחת ל-22°</span>
+            </button>
+            <button class="toggle-btn selected" data-value="normal">
+              <span>רגיל</span>
+              <span class="sub">22°–25°</span>
+            </button>
+            <button class="toggle-btn" data-value="warm">
+              <span>חם</span>
+              <span class="sub">מעל 25°</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Cold Proof Hours -->
+        <div class="card">
+          <span class="section-label">שעות קירור (מקרר)</span>
+          <div class="toggle-group cols-4" id="proof-group">
+            <button class="toggle-btn" data-value="8">8</button>
+            <button class="toggle-btn" data-value="10">10</button>
+            <button class="toggle-btn selected" data-value="12">12</button>
+            <button class="toggle-btn" data-value="14">14</button>
+          </div>
+        </div>
+
+        <!-- Fourth Fold -->
+        <div class="card">
+          <div class="switch-row" id="fold-toggle" role="switch" aria-checked="false" tabindex="0">
+            <span style="font-size:0.875rem;font-weight:500;color:var(--color-brown)">כלול קיפול רביעי</span>
+            <div class="switch-track" id="fold-track">
+              <div class="switch-thumb"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Warnings -->
+        <div id="setup-warnings"></div>
+
+        <!-- CTA -->
+        <button class="btn-primary" id="generate-btn">בנה לי תהליך</button>
+
+        <div style="height:16px"></div>
+      </div>
+    </div>
+
+    <!-- ═══ INGREDIENTS SCREEN ═══ -->
+    <div id="screen-ingredients" class="screen">
+      <div class="flex-col gap-5 stagger" id="ingredients-content"></div>
+    </div>
+
+    <!-- ═══ TIMELINE SCREEN ═══ -->
+    <div id="screen-timeline" class="screen">
+      <div class="flex-col gap-5 stagger" id="timeline-content"></div>
+    </div>
+
+    <!-- ═══ LIVE BAKE SCREEN ═══ -->
+    <div id="screen-live" class="screen">
+      <div class="flex-col gap-5 stagger" id="live-content"></div>
+    </div>
+
+    <!-- ═══ SETTINGS SCREEN ═══ -->
+    <div id="screen-settings" class="screen">
+      <div class="flex-col gap-5 stagger" id="settings-content"></div>
+    </div>
+
+  </main>
+
+  <!-- ═══ BOTTOM NAVIGATION ═══ -->
+  <nav class="bottom-nav no-print" id="bottom-nav">
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-screen="setup" aria-label="התחלה">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        <span>התחלה</span>
+      </button>
+      <button class="nav-tab disabled" data-screen="ingredients" aria-label="מצרכים">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/>
+        </svg>
+        <span>מצרכים</span>
+      </button>
+      <button class="nav-tab disabled" data-screen="timeline" aria-label="ציר זמנים">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span>ציר זמנים</span>
+      </button>
+      <button class="nav-tab disabled" data-screen="live" aria-label="אפייה חיה">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
+        </svg>
+        <span>אפייה חיה</span>
+      </button>
+      <button class="nav-tab" data-screen="settings" aria-label="הגדרות">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        <span>הגדרות</span>
+      </button>
+    </div>
+  </nav>
+
+<script>
+// ═══════════════════════════════════════════
+// BUSINESS LOGIC (ported from TypeScript)
+// ═══════════════════════════════════════════
+
+// ── Constants ──
+const RECIPE_PER_LOAF = {
+  breadFlour: 430,
+  speltFlour: 70,
+  water: 340,
+  starter: 100,
+  salt: 10,
+};
+
+const TIMELINE_DEFAULTS = {
+  autolyseMinutes: 40,
+  foldIntervalMinutes: 30,
+  foldsCount: 3,
+  optionalFourthFold: true,
+  bulkWindowStartHours: 3.5,
+  bulkWindowEndHours: 4.5,
+  preshapeRestMinutes: 20,
+  coldProofHoursDefault: 12,
+  preheatMinutes: 50,
+  bakeCoveredMinutes: 20,
+  bakeOpenMinutes: 25,
+  ovenRecoveryMinutes: 10,
+};
+
+const BULK_DURATION_BY_TEMP = {
+  cool: 4.5,
+  normal: 4.0,
+  warm: 3.5,
+};
+
+const MAX_LOAVES_WARNING = 6;
+const MIN_BAKE_MINUTES = 30;
+const MAX_BAKE_MINUTES = 60;
+
+// ── Ingredients ──
+function calculateIngredients(loaves) {
+  return {
+    breadFlour: RECIPE_PER_LOAF.breadFlour * loaves,
+    speltFlour: RECIPE_PER_LOAF.speltFlour * loaves,
+    water: RECIPE_PER_LOAF.water * loaves,
+    starter: RECIPE_PER_LOAF.starter * loaves,
+    salt: RECIPE_PER_LOAF.salt * loaves,
+  };
+}
+
+// ── Validation ──
+function validateInput(input) {
+  const warnings = [];
+  if (input.loaves > MAX_LOAVES_WARNING) {
+    warnings.push({
+      code: 'too_many_loaves',
+      message: `${input.loaves} כיכרות — ודא שיש לך מספיק ציוד ומקום במקרר`,
+    });
+  }
+  const bakeTime = input.customBakeMinutes ??
+    (TIMELINE_DEFAULTS.bakeCoveredMinutes + TIMELINE_DEFAULTS.bakeOpenMinutes);
+  if (bakeTime < MIN_BAKE_MINUTES || bakeTime > MAX_BAKE_MINUTES) {
+    warnings.push({
+      code: 'unusual_bake_time',
+      message: `זמן אפייה של ${bakeTime} דקות חריג — הטווח המומלץ הוא ${MIN_BAKE_MINUTES}–${MAX_BAKE_MINUTES} דקות`,
+    });
+  }
+  return warnings;
+}
+
+// ── Timeline Helpers ──
+function addMinutes(date, minutes) {
+  return new Date(date.getTime() + minutes * 60000);
+}
+function addHours(date, hours) {
+  return addMinutes(date, hours * 60);
+}
+function toISO(date) {
+  return date.toISOString();
+}
+function parseStartTime(timeStr) {
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  const now = new Date();
+  now.setHours(hours, minutes, 0, 0);
+  return now;
+}
+
+// ── Timeline Generation (core algorithm) ──
+function generateBakePlan(input) {
+  const { loaves, ovens, roomTempMode, coldProofHours, customBakeMinutes, includeFourthFold } = input;
+  const td = TIMELINE_DEFAULTS;
+  const ingredients = calculateIngredients(loaves);
+  const warnings = validateInput(input);
+  const steps = [];
+  let cursor = parseStartTime(input.startTime);
+  const startDay = cursor.getDate();
+
+  // A — Autolyse
+  steps.push({
+    id: 'autolyse', title: 'אוטוליזה',
+    start: toISO(cursor), end: toISO(addMinutes(cursor, td.autolyseMinutes)),
+    type: 'fixed',
+    note: 'ערבב 325 גרם מים עם הקמחות. כסה והנח. שמור 15 גרם מים בצד.',
+  });
+  cursor = addMinutes(cursor, td.autolyseMinutes);
+
+  // B — Mix
+  const mixTime = new Date(cursor);
+  steps.push({
+    id: 'mix', title: 'הוספת מחמצת ומלח',
+    start: toISO(cursor), type: 'fixed',
+    note: 'הוסף 100 גרם מחמצת, 10 גרם מלח ו-15 גרם מים שנשמרו. ערבב עד אחיד.',
+  });
+
+  // C — Folds
+  for (let i = 1; i <= td.foldsCount; i++) {
+    cursor = addMinutes(cursor, td.foldIntervalMinutes);
+    steps.push({
+      id: `fold-${i}`, title: `קיפול ${i}`,
+      start: toISO(cursor), type: 'fixed',
+      note: '4 קיפולי מתיחה או קיפולי סליל',
+    });
+  }
+
+  // Optional 4th fold
+  if (includeFourthFold) {
+    cursor = addMinutes(cursor, td.foldIntervalMinutes);
+    steps.push({
+      id: 'fold-4', title: 'קיפול 4 (אופציונלי)',
+      start: toISO(cursor), type: 'fixed',
+      note: 'קיפול נוסף אם הבצק עדיין רופף',
+    });
+  }
+
+  // D — Bulk
+  const bulkHours = BULK_DURATION_BY_TEMP[roomTempMode];
+  const bulkWindowStart = addHours(mixTime, td.bulkWindowStartHours);
+  const bulkWindowEnd = addHours(mixTime, td.bulkWindowEndHours);
+  const tempLabel = roomTempMode === 'cool' ? 'קריר' : roomTempMode === 'warm' ? 'חם' : 'רגיל';
+
+  steps.push({
+    id: 'bulk-window', title: 'חלון תסיסה ראשונה',
+    start: toISO(bulkWindowStart), end: toISO(bulkWindowEnd),
+    type: 'window',
+    note: 'הבצק צריך לגדול 40%–50%, בועות קטנות בצד, תחושה חיה ורכה',
+  });
+
+  const bulkEndPoint = addHours(mixTime, bulkHours);
+  steps.push({
+    id: 'bulk-end', title: 'סיום תסיסה — זמן מומלץ',
+    start: toISO(bulkEndPoint), type: 'fixed',
+    note: `בחדר ${tempLabel} (${bulkHours} שעות מהערבוב) — עבור לעיצוב מקדים`,
+  });
+
+  cursor = addHours(mixTime, bulkHours);
+
+  // E — Pre-shape
+  steps.push({
+    id: 'preshape', title: 'עיצוב מקדים',
+    start: toISO(cursor), type: 'fixed',
+    note: loaves === 1
+      ? 'הוצא לשולחן ועצב צורה עגולה או אובלית'
+      : `חלק ל-${loaves} חלקים שווים ועצב כל אחד`,
+  });
+
+  // F — Bench rest
+  steps.push({
+    id: 'bench-rest', title: 'מנוחה',
+    start: toISO(cursor), end: toISO(addMinutes(cursor, td.preshapeRestMinutes)),
+    type: 'fixed',
+    note: `הנח על השולחן ${td.preshapeRestMinutes} דקות`,
+  });
+  cursor = addMinutes(cursor, td.preshapeRestMinutes);
+
+  // G — Final shape
+  steps.push({
+    id: 'shape', title: 'עיצוב סופי',
+    start: toISO(cursor), type: 'fixed',
+    note: 'בנה מתח בלי לקרוע. הכנס לסל תפיחה מקומח, תפר כלפי מעלה.',
+  });
+
+  // H — Cold proof
+  steps.push({
+    id: 'cold-proof', title: 'תפיחה קרה (מקרר)',
+    start: toISO(cursor), end: toISO(addHours(cursor, coldProofHours)),
+    type: 'fixed',
+    note: `כסה והכנס למקרר ל-${coldProofHours} שעות`,
+  });
+  cursor = addHours(cursor, coldProofHours);
+  const coldProofEnd = new Date(cursor);
+
+  // I — Preheat
+  const preheatStart = addMinutes(coldProofEnd, -td.preheatMinutes);
+  steps.push({
+    id: 'preheat', title: 'חימום תנור',
+    start: toISO(preheatStart), end: toISO(coldProofEnd),
+    type: 'fixed',
+    note: 'חמם תנור עם הסיר ל-250°C',
+  });
+
+  // J — Baking
+  const bakeCovered = td.bakeCoveredMinutes;
+  const bakeOpen = customBakeMinutes ? customBakeMinutes - bakeCovered : td.bakeOpenMinutes;
+  const bakePerLoaf = bakeCovered + bakeOpen;
+  const recovery = td.ovenRecoveryMinutes;
+  const batches = Math.ceil(loaves / ovens);
+
+  let bakeStart = new Date(coldProofEnd);
+  for (let batch = 0; batch < batches; batch++) {
+    if (batch > 0) {
+      steps.push({
+        id: `recovery-${batch}`, title: 'התאוששות תנור',
+        start: toISO(bakeStart), end: toISO(addMinutes(bakeStart, recovery)),
+        type: 'fixed', note: 'המתן לחימום מחדש של הסיר',
+      });
+      bakeStart = addMinutes(bakeStart, recovery);
+    }
+    const loavesInBatch = Math.min(ovens, loaves - batch * ovens);
+    for (let loaf = 0; loaf < loavesInBatch; loaf++) {
+      const loafIndex = batch * ovens + loaf + 1;
+      const prefix = loaves === 1 ? '' : `כיכר ${loafIndex} — `;
+      steps.push({
+        id: `bake-covered-${loafIndex}`, title: `${prefix}אפייה עם מכסה`,
+        start: toISO(bakeStart), end: toISO(addMinutes(bakeStart, bakeCovered)),
+        type: 'fixed', note: 'סיר סגור, 250°C',
+      });
+      steps.push({
+        id: `bake-open-${loafIndex}`, title: `${prefix}אפייה ללא מכסה`,
+        start: toISO(addMinutes(bakeStart, bakeCovered)),
+        end: toISO(addMinutes(bakeStart, bakePerLoaf)),
+        type: 'fixed', note: 'הסר מכסה, הורד ל-230°C',
+      });
+    }
+    bakeStart = addMinutes(bakeStart, bakePerLoaf);
+  }
+
+  const finalLoafOutTime = bakeStart;
+  if (finalLoafOutTime.getDate() !== startDay) {
+    warnings.push({
+      code: 'crosses_midnight',
+      message: 'התהליך חוצה חצות — שים לב לתאריכים בציר הזמנים',
+    });
+  }
+
+  return { ingredients, steps, finalLoafOutTime: toISO(finalLoafOutTime), warnings };
+}
+
+// ── Estimate Final Time (lightweight, for live banner) ──
+function estimateFinalTime(input) {
+  const { loaves, startTime, ovens, roomTempMode, coldProofHours } = input;
+  const bulkHours = BULK_DURATION_BY_TEMP[roomTempMode];
+  const bakePerLoaf = TIMELINE_DEFAULTS.bakeCoveredMinutes + TIMELINE_DEFAULTS.bakeOpenMinutes;
+  const batches = Math.ceil(loaves / ovens);
+  const totalBakeMinutes = bakePerLoaf * batches + TIMELINE_DEFAULTS.ovenRecoveryMinutes * Math.max(0, batches - 1);
+
+  const totalMinutes =
+    TIMELINE_DEFAULTS.autolyseMinutes +
+    (bulkHours * 60) +
+    TIMELINE_DEFAULTS.preshapeRestMinutes +
+    (coldProofHours * 60) +
+    totalBakeMinutes;
+
+  const start = parseStartTime(startTime);
+  const end = new Date(start.getTime() + totalMinutes * 60000);
+  const crossesMidnight = end.getDate() !== start.getDate();
+  const timeStr = end.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+  if (crossesMidnight) {
+    const dayDiff = Math.round((end - start) / (1000 * 60 * 60 * 24));
+    if (dayDiff <= 1) {
+      return timeStr + ' (מחר)';
+    }
+    const dayName = end.toLocaleDateString('he-IL', { weekday: 'short' });
+    return timeStr + ` (${dayName})`;
+  }
+  return timeStr;
+}
+
+// ═══════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════
+
+function formatTime(iso) {
+  const d = new Date(iso);
+  return d.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', hour12: false });
+}
+
+function formatDay(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('he-IL', { weekday: 'short' });
+}
+
+function isBakeStep(id) {
+  return id.startsWith('bake-') || id.startsWith('recovery-');
+}
+
+function stepDurationLabel(step, nextStep) {
+  const endTime = step.end ? new Date(step.end).getTime() : null;
+  const startTime = new Date(step.start).getTime();
+  const nextStart = nextStep ? new Date(nextStep.start).getTime() : null;
+  const target = endTime ?? nextStart;
+  if (!target) return null;
+  const mins = Math.round((target - startTime) / 60000);
+  if (mins <= 0) return null;
+  if (mins >= 60) {
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    return m > 0 ? `${h} שעות ו-${m} דקות` : `${h} שעות`;
+  }
+  return `${mins} דקות`;
+}
+
+function loafWord(n) {
+  return n === 1 ? 'כיכר אחת' : `${n} כיכרות`;
+}
+
+function renderWarnings(container, warnings) {
+  container.innerHTML = warnings.map(w =>
+    `<div class="warning-banner">
+      <span class="warning-icon">⚠️</span>
+      <span style="flex:1">${w.message}</span>
+    </div>`
+  ).join('');
+}
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+
+const SETTINGS_KEY = 'lehem-didi-settings';
+const DEFAULT_SETTINGS = {
+  roomTempMode: 'normal',
+  coldProofHours: 12,
+  ovens: 1,
+  includeFourthFold: false,
+};
+
+function loadSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (raw) return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+  } catch {}
+  return { ...DEFAULT_SETTINGS };
+}
+
+function saveSettings(s) {
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch {}
+}
+
+function getDefaultStartTime() {
+  const now = new Date();
+  return String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+}
+
+const state = {
+  screen: 'setup',
+  settings: loadSettings(),
+  input: null,
+  plan: null,
+  liveStepIndex: 0,
+  ingredientShowTotal: true,
+  wakeLock: null,
+};
+
+function buildInitialInput() {
+  const s = state.settings;
+  return {
+    loaves: 1,
+    startTime: getDefaultStartTime(),
+    ovens: s.ovens || 1,
+    roomTempMode: s.roomTempMode || 'normal',
+    coldProofHours: s.coldProofHours || 12,
+    includeFourthFold: s.includeFourthFold || false,
+  };
+}
+
+// ═══════════════════════════════════════════
+// SCREEN MANAGEMENT
+// ═══════════════════════════════════════════
+
+function showScreen(id) {
+  state.screen = id;
+  document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+  const target = document.getElementById('screen-' + id);
+  if (target) target.classList.add('active');
+
+  // Update nav
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    const tabScreen = tab.dataset.screen;
+    tab.classList.remove('active');
+    if (tabScreen === id) tab.classList.add('active');
+
+    // Update stroke-width for active tab icon
+    const svg = tab.querySelector('svg');
+    if (svg) svg.setAttribute('stroke-width', tabScreen === id ? '2.2' : '1.8');
+
+    // Indicator
+    const existingIndicator = tab.querySelector('.nav-indicator');
+    if (existingIndicator) existingIndicator.remove();
+    if (tabScreen === id) {
+      const indicator = document.createElement('div');
+      indicator.className = 'nav-indicator';
+      tab.appendChild(indicator);
+    }
+  });
+
+  // Render screen content
+  if (id === 'ingredients' && state.plan) renderIngredients();
+  if (id === 'timeline' && state.plan) renderTimeline();
+  if (id === 'live' && state.plan) renderLiveBake();
+  if (id === 'settings') renderSettings();
+
+  // Wake Lock
+  if (id === 'live') acquireWakeLock();
+  else releaseWakeLock();
+}
+
+function updateNavDisabled() {
+  const hasPlan = state.plan !== null;
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    const id = tab.dataset.screen;
+    if (id === 'ingredients' || id === 'timeline' || id === 'live') {
+      if (hasPlan) {
+        tab.classList.remove('disabled');
+        tab.style.pointerEvents = '';
+      } else {
+        tab.classList.add('disabled');
+        tab.style.pointerEvents = 'none';
+      }
+    }
+  });
+}
+
+// ═══════════════════════════════════════════
+// SETUP SCREEN
+// ═══════════════════════════════════════════
+
+function initSetup() {
+  state.input = buildInitialInput();
+  const inp = state.input;
+
+  // Set initial values
+  document.getElementById('loaves-value').textContent = inp.loaves;
+  document.getElementById('start-time').value = inp.startTime;
+  document.getElementById('ovens-value').textContent = inp.ovens;
+
+  // Sync toggle buttons to saved settings
+  syncToggleGroup('temp-group', inp.roomTempMode);
+  syncToggleGroup('proof-group', String(inp.coldProofHours));
+  syncSwitch('fold-track', inp.includeFourthFold);
+
+  // Loaves stepper
+  document.getElementById('loaves-minus').onclick = () => {
+    if (inp.loaves > 1) { inp.loaves--; document.getElementById('loaves-value').textContent = inp.loaves; updateBanner(); }
+  };
+  document.getElementById('loaves-plus').onclick = () => {
+    if (inp.loaves < 10) { inp.loaves++; document.getElementById('loaves-value').textContent = inp.loaves; updateBanner(); }
+  };
+
+  // Start time
+  document.getElementById('start-time').addEventListener('input', (e) => {
+    inp.startTime = e.target.value;
+    updateBanner();
+  });
+
+  // Ovens stepper
+  document.getElementById('ovens-minus').onclick = () => {
+    if (inp.ovens > 1) { inp.ovens--; document.getElementById('ovens-value').textContent = inp.ovens; updateBanner(); }
+  };
+  document.getElementById('ovens-plus').onclick = () => {
+    if (inp.ovens < 4) { inp.ovens++; document.getElementById('ovens-value').textContent = inp.ovens; updateBanner(); }
+  };
+
+  // Room temp
+  document.getElementById('temp-group').addEventListener('click', (e) => {
+    const btn = e.target.closest('.toggle-btn');
+    if (!btn) return;
+    inp.roomTempMode = btn.dataset.value;
+    syncToggleGroup('temp-group', inp.roomTempMode);
+    updateBanner();
+  });
+
+  // Cold proof
+  document.getElementById('proof-group').addEventListener('click', (e) => {
+    const btn = e.target.closest('.toggle-btn');
+    if (!btn) return;
+    inp.coldProofHours = parseInt(btn.dataset.value);
+    syncToggleGroup('proof-group', btn.dataset.value);
+    updateBanner();
+  });
+
+  // Fourth fold toggle
+  const foldToggle = document.getElementById('fold-toggle');
+  function toggleFold() {
+    inp.includeFourthFold = !inp.includeFourthFold;
+    syncSwitch('fold-track', inp.includeFourthFold);
+    foldToggle.setAttribute('aria-checked', inp.includeFourthFold);
+  }
+  foldToggle.onclick = toggleFold;
+  foldToggle.onkeydown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFold(); }
+  };
+
+  // Generate button
+  document.getElementById('generate-btn').onclick = () => {
+    const w = validateInput(inp);
+    renderWarnings(document.getElementById('setup-warnings'), w);
+    state.plan = generateBakePlan(inp);
+    state.liveStepIndex = 0;
+    updateNavDisabled();
+    showScreen('ingredients');
+  };
+
+  updateBanner();
+}
+
+function syncToggleGroup(groupId, selectedValue) {
+  document.querySelectorAll(`#${groupId} .toggle-btn`).forEach(btn => {
+    btn.classList.toggle('selected', btn.dataset.value === selectedValue);
+  });
+}
+
+function syncSwitch(trackId, isOn) {
+  const track = document.getElementById(trackId);
+  track.classList.toggle('on', isOn);
+}
+
+function updateBanner() {
+  const time = estimateFinalTime(state.input);
+  document.getElementById('completion-time').textContent = time;
+}
+
+// ═══════════════════════════════════════════
+// INGREDIENTS SCREEN
+// ═══════════════════════════════════════════
+
+function renderIngredients() {
+  const plan = state.plan;
+  const loaves = state.input.loaves;
+  const showTotal = state.ingredientShowTotal;
+  const divisor = showTotal ? 1 : loaves;
+  const lw = loafWord(loaves);
+  const suffix = showTotal ? `סה"כ ל-${lw}` : 'לכיכר אחת';
+
+  const labels = [
+    { key: 'breadFlour', label: 'קמח לחם' },
+    { key: 'speltFlour', label: 'קמח כוסמין מלא' },
+    { key: 'water', label: 'מים' },
+    { key: 'starter', label: 'מחמצת' },
+    { key: 'salt', label: 'מלח' },
+  ];
+
+  function formatText() {
+    return `מצרכים (${suffix}):\n` +
+      labels.map(l => `${l.label}: ${Math.round(plan.ingredients[l.key] / divisor)} גרם`).join('\n');
+  }
+
+  const container = document.getElementById('ingredients-content');
+  container.innerHTML = `
+    <!-- Print only header -->
+    <div class="print-only" style="margin-bottom:8px">
+      <h1 style="font-size:18pt;font-weight:700;margin-bottom:4px">לחם דידי — מצרכים</h1>
+      <p style="font-size:12pt;color:#555">${suffix}</p>
+    </div>
+    <!-- Header -->
+    <div style="display:flex;align-items:baseline;justify-content:space-between">
+      <div class="screen-header"><h2>מצרכים</h2></div>
+      <span style="font-size:0.875rem;color:var(--color-brown-light)">${lw}</span>
+    </div>
+    <!-- Toggle -->
+    <div class="segmented no-print">
+      <button class="${showTotal ? 'active' : ''}" id="ing-total-btn">סה"כ</button>
+      <button class="${!showTotal ? 'active' : ''}" id="ing-per-btn">לכיכר</button>
+    </div>
+    <!-- Card -->
+    <div class="card" style="padding:0;overflow:hidden">
+      ${labels.map(l =>
+        `<div class="ingredient-row">
+          <span style="font-size:0.875rem;font-weight:500">${l.label}</span>
+          <span class="ingredient-value">
+            ${Math.round(plan.ingredients[l.key] / divisor)}
+            <span class="ingredient-unit">גרם</span>
+          </span>
+        </div>`
+      ).join('')}
+    </div>
+    <!-- Note -->
+    <div class="info-note">שים לב: מתוך המים, שמור 15 גרם לכל כיכר בצד — להוספה עם המחמצת והמלח.</div>
+    <!-- Actions -->
+    <div style="display:flex;gap:12px" class="no-print">
+      <button class="btn-secondary" id="copy-btn">
+        <svg style="width:16px;height:16px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+        </svg>
+        <span id="copy-label">העתק</span>
+      </button>
+      <button class="btn-secondary" id="print-btn">
+        <svg style="width:16px;height:16px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+        </svg>
+        הדפס
+      </button>
+    </div>
+  `;
+
+  // Toggle events
+  document.getElementById('ing-total-btn').onclick = () => { state.ingredientShowTotal = true; renderIngredients(); };
+  document.getElementById('ing-per-btn').onclick = () => { state.ingredientShowTotal = false; renderIngredients(); };
+
+  // Copy
+  document.getElementById('copy-btn').onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(formatText());
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = formatText();
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    document.getElementById('copy-label').textContent = 'הועתק!';
+    setTimeout(() => { document.getElementById('copy-label').textContent = 'העתק'; }, 2000);
+  };
+
+  // Print
+  document.getElementById('print-btn').onclick = () => window.print();
+}
+
+// ═══════════════════════════════════════════
+// TIMELINE SCREEN
+// ═══════════════════════════════════════════
+
+function renderTimeline() {
+  const plan = state.plan;
+  const steps = plan.steps;
+  const finalTime = formatTime(plan.finalLoafOutTime);
+  const finalDayStr = formatDay(plan.finalLoafOutTime);
+  const firstStepDay = steps.length > 0 ? new Date(steps[0].start).getDate() : null;
+  const finalDate = new Date(plan.finalLoafOutTime).getDate();
+  const crossesMidnight = firstStepDay !== null && firstStepDay !== finalDate;
+
+  let html = `
+    <div class="screen-header">
+      <h2>ציר זמנים</h2>
+      <p>${steps.length} שלבים · סיום ${crossesMidnight ? finalDayStr + ' ' : ''}${finalTime}</p>
+    </div>
+  `;
+
+  // Warnings
+  if (plan.warnings.length > 0) {
+    html += plan.warnings.map(w =>
+      `<div class="warning-banner"><span class="warning-icon">⚠️</span><span style="flex:1">${w.message}</span></div>`
+    ).join('');
+  }
+
+  // Timeline
+  html += '<div class="timeline"><div class="timeline-line"></div>';
+
+  steps.forEach((step, i) => {
+    const bake = isBakeStep(step.id);
+    const isWindow = step.type === 'window';
+    const prevDay = i > 0 ? new Date(steps[i - 1].start).getDate() : null;
+    const thisDay = new Date(step.start).getDate();
+    const showDayBreak = prevDay !== null && prevDay !== thisDay;
+
+    if (showDayBreak) {
+      html += `<div class="day-break">
+        <div class="day-break-line"></div>
+        <span class="day-break-label">${formatDay(step.start)}</span>
+        <div class="day-break-line"></div>
+      </div>`;
+    }
+
+    const dotClass = isWindow ? 'window' : bake ? 'bake' : '';
+    const contentClass = isWindow ? 'window' : bake ? 'bake' : '';
+
+    html += `<div class="timeline-item">
+      <div class="timeline-dot ${dotClass}"></div>
+      <div class="timeline-content ${contentClass}">
+        <div class="timeline-header">
+          <span class="timeline-title">${step.title}</span>
+          <span class="timeline-time">${formatTime(step.start)}${step.end ? ` – ${formatTime(step.end)}` : ''}</span>
+        </div>
+        ${step.note ? `<div class="timeline-note">${step.note}</div>` : ''}
+      </div>
+    </div>`;
+  });
+
+  // Final
+  html += `<div class="timeline-item">
+    <div class="timeline-dot final"></div>
+    <div class="timeline-content final">
+      <div class="timeline-header">
+        <span class="timeline-title" style="font-weight:700;color:var(--color-success)">הכיכר האחרונה מוכנה</span>
+        <span class="timeline-time" style="font-weight:700;color:var(--color-success)">${crossesMidnight ? finalDayStr + ' ' : ''}${finalTime}</span>
+      </div>
+    </div>
+  </div>`;
+
+  html += '</div>';
+
+  document.getElementById('timeline-content').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════
+// LIVE BAKE SCREEN
+// ═══════════════════════════════════════════
+
+function renderLiveBake() {
+  const plan = state.plan;
+  if (!plan) return;
+  const steps = plan.steps;
+  const idx = state.liveStepIndex;
+  const step = steps[idx];
+  const nextStep = idx < steps.length - 1 ? steps[idx + 1] : null;
+  const isLast = idx === steps.length - 1;
+  const progress = ((idx + 1) / steps.length) * 100;
+  const duration = step ? stepDurationLabel(step, nextStep) : null;
+
+  if (!step) {
+    document.getElementById('live-content').innerHTML = `
+      <div class="empty-state">
+        <p style="font-size:1.125rem;font-weight:500">אין תהליך פעיל</p>
+        <p style="font-size:0.875rem;color:var(--color-brown-light)">יש לבנות תהליך במסך ההתחלה לפני השימוש במצב אפייה חיה</p>
+      </div>`;
+    return;
+  }
+
+  let html = `
+    <!-- Progress -->
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="progress-track"><div class="progress-fill" style="width:${progress}%"></div></div>
+      <span class="tabular-nums" style="font-size:0.75rem;color:var(--color-brown-light);flex-shrink:0">${idx + 1} / ${steps.length}</span>
+    </div>
+    <!-- Step Card -->
+    <div class="step-card">
+      <div class="step-card-header">
+        <span style="font-size:0.75rem;color:var(--color-amber);font-weight:500">עכשיו</span>
+      </div>
+      <div class="step-card-body" style="display:flex;flex-direction:column;gap:16px">
+        <h2 style="font-size:1.5rem;font-weight:700;font-family:var(--font-display);line-height:1.3">${step.title}</h2>
+        <div style="display:flex;align-items:center;gap:8px;color:var(--color-brown-light)">
+          <svg style="width:16px;height:16px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span class="tabular-nums" style="font-size:0.875rem">${formatTime(step.start)}${step.end ? ` – ${formatTime(step.end)}` : ''}</span>
+        </div>
+        ${step.note ? `<p style="font-size:1rem;color:rgba(61,43,31,0.8);line-height:1.6">${step.note}</p>` : ''}
+        ${duration ? `<div class="duration-badge">
+          <span style="font-size:0.75rem;color:var(--color-brown-light)">משך:</span>
+          <span class="tabular-nums font-semibold" style="font-size:0.875rem">${duration}</span>
+        </div>` : ''}
+      </div>
+    </div>
+  `;
+
+  // Next preview
+  if (nextStep) {
+    html += `<div class="next-preview">
+      <span style="font-size:0.75rem;color:var(--color-brown-light);display:block;margin-bottom:4px">השלב הבא</span>
+      <div style="display:flex;align-items:baseline;justify-content:space-between">
+        <span style="font-size:0.875rem;font-weight:500">${nextStep.title}</span>
+        <span class="tabular-nums" style="font-size:0.75rem;color:var(--color-brown-light)">${formatTime(nextStep.start)}</span>
+      </div>
+    </div>`;
+  }
+
+  // Controls
+  html += `<div style="display:flex;gap:12px">
+    <button class="nav-btn" id="live-prev" aria-label="שלב קודם" ${idx === 0 ? 'disabled' : ''}>
+      <svg style="width:20px;height:20px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <button class="advance-btn ${isLast ? 'done' : ''}" id="live-next" ${isLast ? '' : ''}>
+      ${isLast ? 'סיום התהליך' : 'סיימתי — הבא'}
+    </button>
+  </div>`;
+
+  // Step list
+  html += `<div style="border-radius:12px;overflow:hidden;border:1px solid rgba(232,221,208,0.4)">
+    <button class="step-list-toggle" id="step-list-toggle">כל השלבים</button>
+    <div class="step-list-items" id="step-list-items">
+      ${steps.map((s, i) => `
+        <button class="step-list-item ${i === idx ? 'current' : ''}" data-step="${i}">
+          <span class="step-list-dot ${i < idx ? 'past' : i === idx ? 'now' : 'future'}">
+            ${i < idx ? '✓' : i + 1}
+          </span>
+          <span style="flex:1;font-size:0.75rem;${i === idx ? 'font-weight:600;color:var(--color-brown)' : 'color:var(--color-brown-light)'}">${s.title}</span>
+          <span class="tabular-nums" style="font-size:0.625rem;color:rgba(122,101,85,0.4)">${formatTime(s.start)}</span>
+        </button>
+      `).join('')}
+    </div>
+  </div>`;
+
+  document.getElementById('live-content').innerHTML = html;
+
+  // Events
+  document.getElementById('live-prev').onclick = () => {
+    if (state.liveStepIndex > 0) { state.liveStepIndex--; renderLiveBake(); }
+  };
+  document.getElementById('live-next').onclick = () => {
+    if (state.liveStepIndex < steps.length - 1) { state.liveStepIndex++; renderLiveBake(); }
+  };
+  document.getElementById('step-list-toggle').onclick = () => {
+    document.getElementById('step-list-items').classList.toggle('open');
+  };
+  document.querySelectorAll('.step-list-item').forEach(btn => {
+    btn.onclick = () => {
+      state.liveStepIndex = parseInt(btn.dataset.step);
+      renderLiveBake();
+    };
+  });
+}
+
+// ── Wake Lock ──
+async function acquireWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      state.wakeLock = await navigator.wakeLock.request('screen');
+    }
+  } catch {}
+}
+function releaseWakeLock() {
+  if (state.wakeLock) { state.wakeLock.release(); state.wakeLock = null; }
+}
+
+// ═══════════════════════════════════════════
+// SETTINGS SCREEN
+// ═══════════════════════════════════════════
+
+function renderSettings() {
+  const s = state.settings;
+  const container = document.getElementById('settings-content');
+
+  container.innerHTML = `
+    <div class="screen-header">
+      <h2>הגדרות</h2>
+      <p>ברירות מחדל לתהליכים חדשים</p>
+    </div>
+    <!-- Room temp -->
+    <div class="card">
+      <span class="section-label">טמפרטורת חדר</span>
+      <div class="toggle-group cols-3" id="settings-temp">
+        <button class="toggle-btn ${s.roomTempMode === 'cool' ? 'selected' : ''}" data-value="cool">קריר</button>
+        <button class="toggle-btn ${s.roomTempMode === 'normal' ? 'selected' : ''}" data-value="normal">רגיל</button>
+        <button class="toggle-btn ${s.roomTempMode === 'warm' ? 'selected' : ''}" data-value="warm">חם</button>
+      </div>
+    </div>
+    <!-- Cold proof -->
+    <div class="card">
+      <span class="section-label">שעות קירור</span>
+      <div class="toggle-group cols-4" id="settings-proof">
+        ${[8,10,12,14].map(h =>
+          `<button class="toggle-btn ${s.coldProofHours === h ? 'selected' : ''}" data-value="${h}">${h}</button>`
+        ).join('')}
+      </div>
+    </div>
+    <!-- Ovens -->
+    <div class="card">
+      <div class="stepper-row">
+        <span style="font-size:0.875rem;font-weight:500">מספר סירים</span>
+        <div class="stepper-controls">
+          <button class="stepper-btn" id="settings-ovens-minus" ${s.ovens <= 1 ? 'disabled' : ''}>−</button>
+          <span class="stepper-value" id="settings-ovens-value">${s.ovens}</span>
+          <button class="stepper-btn" id="settings-ovens-plus" ${s.ovens >= 4 ? 'disabled' : ''}>+</button>
+        </div>
+      </div>
+    </div>
+    <!-- Fourth fold -->
+    <div class="card">
+      <div class="switch-row" id="settings-fold-toggle" role="switch" aria-checked="${s.includeFourthFold}" tabindex="0">
+        <span style="font-size:0.875rem;font-weight:500">כלול קיפול רביעי כברירת מחדל</span>
+        <div class="switch-track ${s.includeFourthFold ? 'on' : ''}" id="settings-fold-track">
+          <div class="switch-thumb"></div>
+        </div>
+      </div>
+    </div>
+    <p class="saved-text">ההגדרות נשמרות אוטומטית</p>
+  `;
+
+  function updateSetting(partial) {
+    Object.assign(state.settings, partial);
+    saveSettings(state.settings);
+  }
+
+  // Temp
+  document.getElementById('settings-temp').addEventListener('click', (e) => {
+    const btn = e.target.closest('.toggle-btn');
+    if (!btn) return;
+    updateSetting({ roomTempMode: btn.dataset.value });
+    document.querySelectorAll('#settings-temp .toggle-btn').forEach(b =>
+      b.classList.toggle('selected', b.dataset.value === btn.dataset.value));
+  });
+
+  // Proof
+  document.getElementById('settings-proof').addEventListener('click', (e) => {
+    const btn = e.target.closest('.toggle-btn');
+    if (!btn) return;
+    updateSetting({ coldProofHours: parseInt(btn.dataset.value) });
+    document.querySelectorAll('#settings-proof .toggle-btn').forEach(b =>
+      b.classList.toggle('selected', b.dataset.value === btn.dataset.value));
+  });
+
+  // Ovens
+  document.getElementById('settings-ovens-minus').onclick = () => {
+    if (state.settings.ovens > 1) {
+      updateSetting({ ovens: state.settings.ovens - 1 });
+      renderSettings();
+    }
+  };
+  document.getElementById('settings-ovens-plus').onclick = () => {
+    if (state.settings.ovens < 4) {
+      updateSetting({ ovens: state.settings.ovens + 1 });
+      renderSettings();
+    }
+  };
+
+  // Fold toggle
+  const foldToggle = document.getElementById('settings-fold-toggle');
+  function toggleSettingsFold() {
+    updateSetting({ includeFourthFold: !state.settings.includeFourthFold });
+    const track = document.getElementById('settings-fold-track');
+    track.classList.toggle('on', state.settings.includeFourthFold);
+    foldToggle.setAttribute('aria-checked', state.settings.includeFourthFold);
+  }
+  foldToggle.onclick = toggleSettingsFold;
+  foldToggle.onkeydown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSettingsFold(); }
+  };
+}
+
+// ═══════════════════════════════════════════
+// NAV EVENTS
+// ═══════════════════════════════════════════
+
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    if (tab.classList.contains('disabled')) return;
+    showScreen(tab.dataset.screen);
+  });
+});
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+
+initSetup();
+updateNavDisabled();
+</script>
+
+</body>
+</html>

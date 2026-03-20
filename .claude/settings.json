@@ -4,7 +4,15 @@
       "Bash(npx create-next-app@latest . --typescript --tailwind --app --eslint --src-dir --import-alias \"@/*\" --yes)",
       "Bash(npx tsc:*)",
       "Bash(npm run:*)",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(grep -E \"\\\\.\\(tsx?|css\\)$\")",
+      "mcp__plugin_playwright_playwright__browser_resize",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/index.html)",
+      "mcp__plugin_playwright_playwright__browser_take_screenshot",
+      "mcp__plugin_playwright_playwright__browser_click",
+      "Bash(npx -y http-server -p 8080 -c-1 --silent)",
+      "Bash(npx -y http-server -p 8081 -c-1 --silent)"
     ],
     "additionalDirectories": [
       "c:\\Users\\yaniv\\Downloads\\Project\\לחם דידי 2\\app-shell\\src"
