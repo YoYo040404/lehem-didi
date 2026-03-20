@@ -120,7 +120,15 @@
     .brand-header {
       text-align: center;
       margin-bottom: 8px;
+      position: relative;
     }
+    .brand-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .brand-logo { width: 56px; height: 56px; flex-shrink: 0; }
     .brand-header h1 {
       font-family: var(--font-display);
       font-weight: 700;
@@ -134,6 +142,24 @@
       color: var(--color-brown-light);
       margin-top: 4px;
     }
+    .dark-toggle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(245,230,206,0.6);
+      color: var(--color-brown-light);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .dark-toggle:hover { background: var(--color-wheat); }
+    .dark-toggle svg { width: 18px; height: 18px; }
 
     /* ── Completion Banner ── */
     .completion-banner {
@@ -767,6 +793,104 @@
 
     /* ── Saved indicator ── */
     .saved-text { font-size: 0.75rem; color: rgba(122,101,85,0.4); text-align: center; }
+
+    /* ── Circular Timer ── */
+    .timer-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 0 4px;
+    }
+    .timer-ring-wrap {
+      position: relative;
+      width: 160px;
+      height: 160px;
+    }
+    .timer-ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg) scaleX(-1); }
+    .timer-track { fill: none; stroke: var(--color-wheat); stroke-width: 8; }
+    .timer-fill { fill: none; stroke: var(--color-amber); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+    .timer-fill.urgent { stroke: var(--color-terracotta); }
+    .timer-text-group {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .timer-digits {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-brown);
+      line-height: 1;
+    }
+    .timer-label {
+      font-size: 0.75rem;
+      color: var(--color-brown-light);
+      margin-top: 4px;
+    }
+    .timer-done-text {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-terracotta);
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+    }
+    .timer-done { animation: pulse 1.5s ease-in-out infinite; }
+    .timer-no-countdown {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 16px 0;
+    }
+    .timer-no-countdown svg { width: 40px; height: 40px; color: var(--color-amber-light); }
+
+    /* ── Dark Mode ── */
+    html.dark {
+      --color-cream: #1A1410;
+      --color-wheat: #2A2018;
+      --color-brown: #F5E6CE;
+      --color-brown-light: #C4A882;
+      --color-card: #231C14;
+      --color-border: #3D3020;
+      --color-warning-bg: #3D2E10;
+      --color-warning-text: #F59E0B;
+    }
+    html.dark body::before { opacity: 0.02; }
+    html.dark .bottom-nav { background: rgba(26,20,16,0.95); }
+    html.dark .stepper-btn { background: rgba(42,32,24,0.7); }
+    html.dark .stepper-btn:hover { background: var(--color-wheat); }
+    html.dark .toggle-btn { background: rgba(42,32,24,0.5); }
+    html.dark .toggle-btn.selected { background: rgba(212,145,61,0.2); }
+    html.dark .time-input { background: rgba(42,32,24,0.5); border-color: var(--color-border); }
+    html.dark .segmented { background: rgba(42,32,24,0.6); }
+    html.dark .info-note { background: rgba(42,32,24,0.5); }
+    html.dark .step-list-toggle { background: var(--color-card); }
+    html.dark .dark-toggle { background: rgba(42,32,24,0.6); }
+    html.dark .btn-secondary { background: var(--color-card); }
+    html.dark .switch-track { background: var(--color-border); }
+    html.dark .nav-btn { background: var(--color-card); }
+    html.dark .next-preview { background: rgba(42,32,24,0.5); border-color: var(--color-border); }
+    html.dark .duration-badge { background: rgba(42,32,24,0.5); }
+    @media (prefers-color-scheme: dark) {
+      html:not(.light) {
+        --color-cream: #1A1410;
+        --color-wheat: #2A2018;
+        --color-brown: #F5E6CE;
+        --color-brown-light: #C4A882;
+        --color-card: #231C14;
+        --color-border: #3D3020;
+        --color-warning-bg: #3D2E10;
+        --color-warning-text: #F59E0B;
+      }
+    }
   </style>
 </head>
 <body>
@@ -779,13 +903,56 @@
 
         <!-- Branded Header -->
         <div class="brand-header">
-          <h1>לחם דידי</h1>
+          <button class="dark-toggle" id="dark-toggle" aria-label="מצב כהה">
+            <svg id="dark-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+            </svg>
+          </button>
+          <div class="brand-title-row">
+            <svg class="brand-logo" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Sourdough boule -->
+              <ellipse cx="60" cy="68" rx="48" ry="40" fill="#D4913D"/>
+              <ellipse cx="60" cy="68" rx="48" ry="40" fill="url(#bread-grad)"/>
+              <!-- Top crust highlight -->
+              <ellipse cx="60" cy="58" rx="40" ry="28" fill="#E8B86D" opacity="0.5"/>
+              <!-- Score marks -->
+              <path d="M35 55 C45 48, 55 50, 60 45" stroke="#3D2B1F" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.35"/>
+              <path d="M60 45 C65 50, 75 48, 85 55" stroke="#3D2B1F" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.35"/>
+              <path d="M42 65 C50 58, 60 56, 78 65" stroke="#3D2B1F" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.25"/>
+              <!-- Ear bloom -->
+              <path d="M58 44 C56 38, 60 32, 65 36 C68 38, 64 44, 62 45" fill="#C05621" opacity="0.4"/>
+              <!-- Flour dust -->
+              <circle cx="45" cy="52" r="1.5" fill="#FDF6EC" opacity="0.6"/>
+              <circle cx="70" cy="48" r="2" fill="#FDF6EC" opacity="0.5"/>
+              <circle cx="55" cy="42" r="1.2" fill="#FDF6EC" opacity="0.5"/>
+              <circle cx="78" cy="56" r="1.8" fill="#FDF6EC" opacity="0.4"/>
+              <circle cx="38" cy="60" r="1" fill="#FDF6EC" opacity="0.5"/>
+              <circle cx="65" cy="38" r="1.3" fill="#FDF6EC" opacity="0.45"/>
+              <circle cx="50" cy="58" r="1" fill="#FDF6EC" opacity="0.35"/>
+              <!-- Shadow base -->
+              <ellipse cx="60" cy="108" rx="38" ry="5" fill="#3D2B1F" opacity="0.08"/>
+              <defs>
+                <radialGradient id="bread-grad" cx="0.45" cy="0.35" r="0.6">
+                  <stop offset="0%" stop-color="#E8B86D" stop-opacity="0.4"/>
+                  <stop offset="100%" stop-color="#A84919" stop-opacity="0.2"/>
+                </radialGradient>
+              </defs>
+            </svg>
+            <h1>לחם דידי</h1>
+          </div>
           <p>בנה תהליך אפייה מותאם אישית</p>
         </div>
 
         <!-- Completion Banner -->
         <div class="completion-banner" id="completion-banner">
-          <div class="banner-icon">🍞</div>
+          <div class="banner-icon">
+            <svg width="32" height="32" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="60" cy="68" rx="48" ry="40" fill="white" opacity="0.9"/>
+              <ellipse cx="60" cy="58" rx="40" ry="28" fill="white" opacity="0.3"/>
+              <path d="M35 55 C45 48, 55 50, 60 45" stroke="white" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.5"/>
+              <path d="M60 45 C65 50, 75 48, 85 55" stroke="white" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.5"/>
+            </svg>
+          </div>
           <div class="banner-text">
             הכיכר האחרונה תהיה מוכנה ב-
             <span class="banner-time" id="completion-time">--:--</span>
@@ -1267,6 +1434,9 @@ const DEFAULT_SETTINGS = {
   coldProofHours: 12,
   ovens: 1,
   includeFourthFold: false,
+  muteSound: false,
+  enableNotifications: false,
+  darkMode: 'auto',
 };
 
 function loadSettings() {
@@ -1294,6 +1464,9 @@ const state = {
   liveStepIndex: 0,
   ingredientShowTotal: true,
   wakeLock: null,
+  timerInterval: null,
+  timerAlertFired: false,
+  notifSent: false,
 };
 
 function buildInitialInput() {
@@ -1306,6 +1479,198 @@ function buildInitialInput() {
     coldProofHours: s.coldProofHours || 12,
     includeFourthFold: s.includeFourthFold || false,
   };
+}
+
+// ═══════════════════════════════════════════
+// DARK MODE
+// ═══════════════════════════════════════════
+
+function applyDarkMode() {
+  const pref = state.settings.darkMode;
+  const html = document.documentElement;
+  html.classList.remove('dark', 'light');
+  if (pref === 'dark') {
+    html.classList.add('dark');
+  } else if (pref === 'light') {
+    html.classList.add('light');
+  }
+  // 'auto' = no class, let prefers-color-scheme handle it
+  updateDarkIcon();
+}
+
+function updateDarkIcon() {
+  const isDark = document.documentElement.classList.contains('dark') ||
+    (!document.documentElement.classList.contains('light') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const icon = document.getElementById('dark-icon');
+  if (!icon) return;
+  if (isDark) {
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  } else {
+    icon.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+  }
+}
+
+function cycleDarkMode() {
+  const modes = ['auto', 'dark', 'light'];
+  const current = state.settings.darkMode || 'auto';
+  const next = modes[(modes.indexOf(current) + 1) % modes.length];
+  state.settings.darkMode = next;
+  saveSettings(state.settings);
+  applyDarkMode();
+}
+
+// ═══════════════════════════════════════════
+// SOUND + VIBRATION
+// ═══════════════════════════════════════════
+
+function playChime() {
+  if (state.settings.muteSound) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // Play two notes for a pleasant chime
+    [830, 1046].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const t = ctx.currentTime + i * 0.15;
+      gain.gain.setValueAtTime(0.25, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+      osc.start(t);
+      osc.stop(t + 0.6);
+    });
+  } catch {}
+}
+
+function vibrate() {
+  if (state.settings.muteSound) return;
+  try { if ('vibrate' in navigator) navigator.vibrate([200, 100, 200]); } catch {}
+}
+
+// ═══════════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════════
+
+function requestNotificationPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+}
+
+function sendNotification(title, body) {
+  if (!state.settings.enableNotifications) return;
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  try {
+    new Notification(title, { body, tag: 'lehem-didi-step' });
+  } catch {}
+}
+
+// ═══════════════════════════════════════════
+// TIMER ENGINE
+// ═══════════════════════════════════════════
+
+const TIMER_CIRCUMFERENCE = 2 * Math.PI * 68; // radius 68 for 160px SVG
+
+function getStepEndTime(step, nextStep) {
+  if (step.end) return new Date(step.end).getTime();
+  if (nextStep) return new Date(nextStep.start).getTime();
+  return null;
+}
+
+function getStepDurationMs(step, nextStep) {
+  const end = getStepEndTime(step, nextStep);
+  if (!end) return 0;
+  return end - new Date(step.start).getTime();
+}
+
+function startTimer() {
+  stopTimer();
+  state.timerAlertFired = false;
+  state.notifSent = false;
+  state.timerInterval = setInterval(updateTimerDisplay, 1000);
+  updateTimerDisplay();
+}
+
+function stopTimer() {
+  if (state.timerInterval) {
+    clearInterval(state.timerInterval);
+    state.timerInterval = null;
+  }
+}
+
+function updateTimerDisplay() {
+  const plan = state.plan;
+  if (!plan || state.screen !== 'live') { stopTimer(); return; }
+
+  const steps = plan.steps;
+  const idx = state.liveStepIndex;
+  const step = steps[idx];
+  const nextStep = idx < steps.length - 1 ? steps[idx + 1] : null;
+  if (!step) return;
+
+  const endTime = getStepEndTime(step, nextStep);
+  if (!endTime) return; // no countdown for instant steps
+
+  const now = Date.now();
+  const remaining = Math.max(0, endTime - now);
+  const totalDuration = getStepDurationMs(step, nextStep);
+  const elapsed = totalDuration - remaining;
+  const progress = totalDuration > 0 ? Math.min(1, elapsed / totalDuration) : 1;
+
+  // Update SVG ring
+  const fill = document.getElementById('timer-fill');
+  const digits = document.getElementById('timer-digits');
+  const label = document.getElementById('timer-label');
+  if (!fill || !digits) return;
+
+  const offset = TIMER_CIRCUMFERENCE * (1 - progress);
+  fill.style.strokeDashoffset = offset;
+
+  // Urgent color when < 2 minutes
+  if (remaining < 120000 && remaining > 0) {
+    fill.classList.add('urgent');
+  } else {
+    fill.classList.remove('urgent');
+  }
+
+  if (remaining <= 0) {
+    // Timer done
+    digits.textContent = 'הזמן תם';
+    digits.classList.add('timer-done-text');
+    digits.style.fontSize = '1.25rem';
+    if (label) label.textContent = '';
+    const wrap = document.querySelector('.timer-ring-wrap');
+    if (wrap) wrap.classList.add('timer-done');
+    fill.style.strokeDashoffset = '0';
+
+    if (!state.timerAlertFired) {
+      state.timerAlertFired = true;
+      playChime();
+      vibrate();
+      sendNotification('לחם דידי', `הזמן תם — ${step.title}`);
+    }
+  } else {
+    digits.classList.remove('timer-done-text');
+    digits.style.fontSize = '';
+    const totalSec = Math.ceil(remaining / 1000);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    if (h > 0) {
+      digits.textContent = `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    } else {
+      digits.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+    if (label) label.textContent = h > 0 ? '' : 'דקות';
+
+    // 2-minute warning notification
+    if (remaining <= 120000 && !state.notifSent && nextStep) {
+      state.notifSent = true;
+      sendNotification('לחם דידי', `השלב הבא בעוד 2 דקות: ${nextStep.title}`);
+    }
+  }
 }
 
 // ═══════════════════════════════════════════
@@ -1344,9 +1709,15 @@ function showScreen(id) {
   if (id === 'live' && state.plan) renderLiveBake();
   if (id === 'settings') renderSettings();
 
-  // Wake Lock
-  if (id === 'live') acquireWakeLock();
-  else releaseWakeLock();
+  // Wake Lock + Timer
+  if (id === 'live') {
+    acquireWakeLock();
+    if (state.settings.enableNotifications) requestNotificationPermission();
+    startTimer();
+  } else {
+    releaseWakeLock();
+    stopTimer();
+  }
 }
 
 function updateNavDisabled() {
@@ -1642,6 +2013,7 @@ function renderTimeline() {
 // ═══════════════════════════════════════════
 
 function renderLiveBake() {
+  stopTimer();
   const plan = state.plan;
   if (!plan) return;
   const steps = plan.steps;
@@ -1651,6 +2023,7 @@ function renderLiveBake() {
   const isLast = idx === steps.length - 1;
   const progress = ((idx + 1) / steps.length) * 100;
   const duration = step ? stepDurationLabel(step, nextStep) : null;
+  const hasCountdown = step && getStepDurationMs(step, nextStep) > 0;
 
   if (!step) {
     document.getElementById('live-content').innerHTML = `
@@ -1669,22 +2042,38 @@ function renderLiveBake() {
     </div>
     <!-- Step Card -->
     <div class="step-card">
-      <div class="step-card-header">
+      <div class="step-card-header" style="display:flex;align-items:center;justify-content:space-between">
         <span style="font-size:0.75rem;color:var(--color-amber);font-weight:500">עכשיו</span>
+        <span class="tabular-nums" style="font-size:0.75rem;color:var(--color-brown-light)">${formatTime(step.start)}${step.end ? ` – ${formatTime(step.end)}` : ''}</span>
       </div>
-      <div class="step-card-body" style="display:flex;flex-direction:column;gap:16px">
-        <h2 style="font-size:1.5rem;font-weight:700;font-family:var(--font-display);line-height:1.3">${step.title}</h2>
-        <div style="display:flex;align-items:center;gap:8px;color:var(--color-brown-light)">
-          <svg style="width:16px;height:16px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          <span class="tabular-nums" style="font-size:0.875rem">${formatTime(step.start)}${step.end ? ` – ${formatTime(step.end)}` : ''}</span>
-        </div>
-        ${step.note ? `<p style="font-size:1rem;color:rgba(61,43,31,0.8);line-height:1.6">${step.note}</p>` : ''}
-        ${duration ? `<div class="duration-badge">
-          <span style="font-size:0.75rem;color:var(--color-brown-light)">משך:</span>
-          <span class="tabular-nums font-semibold" style="font-size:0.875rem">${duration}</span>
-        </div>` : ''}
+      <div class="step-card-body" style="display:flex;flex-direction:column;gap:16px;align-items:center">
+        <h2 style="font-size:1.5rem;font-weight:700;font-family:var(--font-display);line-height:1.3;text-align:center">${step.title}</h2>
+        ${hasCountdown ? `
+          <!-- Circular Timer -->
+          <div class="timer-container">
+            <div class="timer-ring-wrap">
+              <svg viewBox="0 0 160 160">
+                <circle class="timer-track" cx="80" cy="80" r="68"/>
+                <circle class="timer-fill" id="timer-fill" cx="80" cy="80" r="68"
+                  stroke-dasharray="${TIMER_CIRCUMFERENCE}"
+                  stroke-dashoffset="${TIMER_CIRCUMFERENCE}"/>
+              </svg>
+              <div class="timer-text-group">
+                <span class="timer-digits" id="timer-digits">--:--</span>
+                <span class="timer-label" id="timer-label">דקות</span>
+              </div>
+            </div>
+          </div>
+        ` : `
+          <!-- No countdown for instant steps -->
+          <div class="timer-no-countdown">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span style="font-size:0.875rem;color:var(--color-brown-light)">${formatTime(step.start)}</span>
+          </div>
+        `}
+        ${step.note ? `<p style="font-size:0.9375rem;color:var(--color-brown-light);line-height:1.6;text-align:center;max-width:320px">${step.note}</p>` : ''}
       </div>
     </div>
   `;
@@ -1705,7 +2094,7 @@ function renderLiveBake() {
     <button class="nav-btn" id="live-prev" aria-label="שלב קודם" ${idx === 0 ? 'disabled' : ''}>
       <svg style="width:20px;height:20px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
     </button>
-    <button class="advance-btn ${isLast ? 'done' : ''}" id="live-next" ${isLast ? '' : ''}>
+    <button class="advance-btn ${isLast ? 'done' : ''}" id="live-next">
       ${isLast ? 'סיום התהליך' : 'סיימתי — הבא'}
     </button>
   </div>`;
@@ -1727,6 +2116,9 @@ function renderLiveBake() {
   </div>`;
 
   document.getElementById('live-content').innerHTML = html;
+
+  // Start timer for this step
+  if (hasCountdown) startTimer();
 
   // Events
   document.getElementById('live-prev').onclick = () => {
@@ -1809,6 +2201,39 @@ function renderSettings() {
         </div>
       </div>
     </div>
+    <!-- Mute sounds -->
+    <div class="card">
+      <div class="switch-row" id="settings-mute-toggle" role="switch" aria-checked="${s.muteSound}" tabindex="0">
+        <div>
+          <span style="font-size:0.875rem;font-weight:500;display:block">השתק צלילים</span>
+          <span style="font-size:0.75rem;color:var(--color-brown-light)">ללא צלצול ורטט בסיום שלב</span>
+        </div>
+        <div class="switch-track ${s.muteSound ? 'on' : ''}" id="settings-mute-track">
+          <div class="switch-thumb"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Notifications -->
+    <div class="card">
+      <div class="switch-row" id="settings-notif-toggle" role="switch" aria-checked="${s.enableNotifications}" tabindex="0">
+        <div>
+          <span style="font-size:0.875rem;font-weight:500;display:block">התראות דפדפן</span>
+          <span style="font-size:0.75rem;color:var(--color-brown-light)">קבל התראה 2 דקות לפני סיום שלב</span>
+        </div>
+        <div class="switch-track ${s.enableNotifications ? 'on' : ''}" id="settings-notif-track">
+          <div class="switch-thumb"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Dark mode -->
+    <div class="card">
+      <span class="section-label">מצב תצוגה</span>
+      <div class="toggle-group cols-3" id="settings-dark">
+        <button class="toggle-btn ${(s.darkMode || 'auto') === 'auto' ? 'selected' : ''}" data-value="auto">אוטומטי</button>
+        <button class="toggle-btn ${s.darkMode === 'light' ? 'selected' : ''}" data-value="light">בהיר</button>
+        <button class="toggle-btn ${s.darkMode === 'dark' ? 'selected' : ''}" data-value="dark">כהה</button>
+      </div>
+    </div>
     <p class="saved-text">ההגדרות נשמרות אוטומטית</p>
   `;
 
@@ -1861,6 +2286,38 @@ function renderSettings() {
   foldToggle.onkeydown = (e) => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSettingsFold(); }
   };
+
+  // Mute toggle
+  const muteToggle = document.getElementById('settings-mute-toggle');
+  function toggleMute() {
+    updateSetting({ muteSound: !state.settings.muteSound });
+    document.getElementById('settings-mute-track').classList.toggle('on', state.settings.muteSound);
+    muteToggle.setAttribute('aria-checked', state.settings.muteSound);
+  }
+  muteToggle.onclick = toggleMute;
+  muteToggle.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMute(); } };
+
+  // Notification toggle
+  const notifToggle = document.getElementById('settings-notif-toggle');
+  function toggleNotif() {
+    const newVal = !state.settings.enableNotifications;
+    updateSetting({ enableNotifications: newVal });
+    document.getElementById('settings-notif-track').classList.toggle('on', newVal);
+    notifToggle.setAttribute('aria-checked', newVal);
+    if (newVal) requestNotificationPermission();
+  }
+  notifToggle.onclick = toggleNotif;
+  notifToggle.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleNotif(); } };
+
+  // Dark mode
+  document.getElementById('settings-dark').addEventListener('click', (e) => {
+    const btn = e.target.closest('.toggle-btn');
+    if (!btn) return;
+    updateSetting({ darkMode: btn.dataset.value });
+    document.querySelectorAll('#settings-dark .toggle-btn').forEach(b =>
+      b.classList.toggle('selected', b.dataset.value === btn.dataset.value));
+    applyDarkMode();
+  });
 }
 
 // ═══════════════════════════════════════════
@@ -1878,6 +2335,8 @@ document.querySelectorAll('.nav-tab').forEach(tab => {
 // INIT
 // ═══════════════════════════════════════════
 
+applyDarkMode();
+document.getElementById('dark-toggle').onclick = cycleDarkMode;
 initSetup();
 updateNavDisabled();
 </script>
